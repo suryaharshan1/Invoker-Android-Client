@@ -12,4 +12,15 @@
     tools:context="com.windroilla.invoker.RegisterActivity"
     tools:showIn="@layout/activity_register">
 
+    <EditText
+        android:id="@+id/register_phone_editText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="75dp"
+        android:ems="10"
+        android:gravity="center_horizontal"
+        android:inputType="phone" />
+
 </RelativeLayout>
