@@ -13,5 +13,5 @@ import dagger.Component;
 @Component(modules = {ApiModule.class})
 
 public interface InvokerGraph {
-
+    void inject(RegisterActivity registerActivity);
 }

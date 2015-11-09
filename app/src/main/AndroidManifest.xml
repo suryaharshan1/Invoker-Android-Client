@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.windroilla.invoker">
 
+    <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:name=".InvokerApp"
         android:allowBackup="true"

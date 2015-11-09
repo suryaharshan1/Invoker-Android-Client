@@ -2,6 +2,7 @@ package com.windroilla.invoker.api;
 
 import android.app.Application;
 import android.content.Context;
+import android.provider.Settings;
 
 import com.google.gson.Gson;
 import com.squareup.okhttp.OkHttpClient;
@@ -22,12 +23,18 @@ import retrofit.converter.GsonConverter;
  */
 @Module
 public final class ApiModule {
-    public static final String PRODUCTION_API_URL = "http://192.168.1.100/invoker-api/v1/";
+    public static final String PRODUCTION_API_URL = "http://192.168.1.102/invoker-api/v1/";
 
     private Context context;
 
     public ApiModule(Context context) {
         this.context = context;
+    }
+
+    @Provides
+    @Singleton
+    String provideDeviceID() {
+        return Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
     }
 
     @Provides
