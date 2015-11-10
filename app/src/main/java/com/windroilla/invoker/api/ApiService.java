@@ -13,7 +13,7 @@ import rx.Observable;
  */
 public interface ApiService {
 
-    @Headers({"Content-Type:application/json-patch+json"})
+    @Headers({"Content-Type:application/json"})
     @POST("/iresp/invoker-api/v1/users")
     Observable<UserProfile> registerNewUser(@Body RequestRegistration body);
 }
