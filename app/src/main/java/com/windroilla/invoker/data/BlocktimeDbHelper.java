@@ -11,10 +11,9 @@ import com.windroilla.invoker.data.BlocktimeContract.BlocktimeEntry;
  */
 public class BlocktimeDbHelper extends SQLiteOpenHelper {
 
+    static final String DATABASE_NAME = "blocktime.db";
     // If you change the database schema, you must increment the database version.
     private static final int DATABASE_VERSION = 1;
-
-    static final String DATABASE_NAME = "blocktime.db";
 
 
     public BlocktimeDbHelper(Context context) {
@@ -37,5 +36,6 @@ public class BlocktimeDbHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + BlocktimeEntry.TABLE_NAME);
+        onCreate(sqLiteDatabase);
     }
 }
