@@ -1,5 +1,6 @@
 package com.windroilla.invoker;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -25,6 +26,7 @@ import rx.schedulers.Schedulers;
 public class InstituteActivity extends AppCompatActivity {
 
     public final static String TAG = "INVOKER_INSTITUTE";
+    public final static String INVOKER_PASS_INS_ID = "INVOKER_PASS_INS_ID";
     @Inject
     ApiService apiService;
     private ListView lv;
@@ -64,6 +66,9 @@ public class InstituteActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Institute ins = (Institute) parent.getItemAtPosition(position);
+                Intent i = new Intent(getBaseContext(), CourseActivity.class);
+                i.putExtra(INVOKER_PASS_INS_ID, ins.getId());
+                startActivity(i);
             }
         });
     }
