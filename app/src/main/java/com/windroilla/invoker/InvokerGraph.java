@@ -14,4 +14,8 @@ import dagger.Component;
 
 public interface InvokerGraph {
     void inject(RegisterActivity registerActivity);
+
+    void inject(InstituteActivity instituteActivity);
+
+    void inject(CourseActivity courseActivity);
 }

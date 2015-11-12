@@ -3,6 +3,7 @@
     package="com.windroilla.invoker">
 
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".InvokerApp"
         android:allowBackup="true"
@@ -29,6 +30,14 @@
             android:label="@string/title_activity_register"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateAlwaysVisible" />
+        <activity
+            android:name=".InstituteActivity"
+            android:label="@string/title_activity_institute"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".CourseActivity"
+            android:label="@string/title_activity_course"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
