@@ -24,10 +24,10 @@ public class BlocktimeDbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         final String SQL_CREATE_BLOCKTIME_TABLE = "CREATE TABLE " + BlocktimeEntry.TABLE_NAME + " (" +
-                BlocktimeEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                BlocktimeEntry.COLUMN_START_TIME + "DATETIME NOT NULL" +
-                BlocktimeEntry.COLUMN_END_TIME + "DATETIME NOT NULL" +
-                BlocktimeEntry.COLUMN_CREATED_TIME + "DATETIME NOT NULL";
+                BlocktimeEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                BlocktimeEntry.COLUMN_START_TIME + " DATETIME NOT NULL, " +
+                BlocktimeEntry.COLUMN_END_TIME + " DATETIME NOT NULL, " +
+                BlocktimeEntry.COLUMN_CREATED_TIME + " DATETIME NOT NULL );";
 
         sqLiteDatabase.execSQL(SQL_CREATE_BLOCKTIME_TABLE);
 

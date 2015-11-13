@@ -6,4 +6,5 @@
     <string name="title_activity_institute">InstituteActivity</string>
     <string name="title_activity_course">CourseActivity</string>
     <string name="title_activity_block_time">BlockTimeActivity</string>
+    <string name="content_authority">com.windroilla.invoker.app</string>
 </resources>

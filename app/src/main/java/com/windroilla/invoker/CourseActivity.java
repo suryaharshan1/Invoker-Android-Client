@@ -1,6 +1,8 @@
 package com.windroilla.invoker;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -13,11 +15,14 @@ import android.widget.Toast;
 import com.windroilla.invoker.adapter.CourseAdapter;
 import com.windroilla.invoker.api.ApiService;
 import com.windroilla.invoker.api.requestclasses.RequestSetUserCourseList;
+import com.windroilla.invoker.api.responseclasses.BlockTime;
 import com.windroilla.invoker.api.responseclasses.BlockTimeList;
 import com.windroilla.invoker.api.responseclasses.Course;
+import com.windroilla.invoker.data.BlocktimeContract;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 import javax.inject.Inject;
 
@@ -95,19 +100,35 @@ public class CourseActivity extends AppCompatActivity {
                                     @Override
                                     public void call(BlockTimeList blockTimeList) {
                                         Log.d(TAG, blockTimeList.access_time);
+                                        Vector<ContentValues> cVVector = new Vector<ContentValues>(blockTimeList.getBlockTimes().size());
                                         for (int i = 0; i < blockTimeList.getBlockTimes().size(); i++) {
-                                            Log.d(TAG, blockTimeList.getBlockTimes().get(i).getCourse_id() + " " +
-                                                    blockTimeList.getBlockTimes().get(i).getId() + " " +
-                                                    blockTimeList.getBlockTimes().get(i).getStarttime() + " " +
-                                                    blockTimeList.getBlockTimes().get(i).getEndtime() + " " +
-                                                    blockTimeList.getBlockTimes().get(i).getCreated_time());
+                                            BlockTime blockTime = blockTimeList.getBlockTimes().get(i);
+                                            Log.d(TAG, blockTime.getCourse_id() + " " +
+                                                    blockTime.getId() + " " +
+                                                    blockTime.getStarttime() + " " +
+                                                    blockTime.getEndtime() + " " +
+                                                    blockTime.getCreated_time());
+                                            ContentValues blockTimeValues = new ContentValues();
+                                            blockTimeValues.put(BlocktimeContract.BlocktimeEntry.COLUMN_START_TIME, blockTime.getStarttime());
+                                            blockTimeValues.put(BlocktimeContract.BlocktimeEntry.COLUMN_END_TIME, blockTime.getEndtime());
+                                            blockTimeValues.put(BlocktimeContract.BlocktimeEntry.COLUMN_CREATED_TIME, blockTime.getCreated_time());
+                                            cVVector.add(blockTimeValues);
                                         }
-                                        /*
+
+                                        int inserted = 0;
+                                        // add to database
+                                        if (cVVector.size() > 0) {
+                                            ContentValues[] cvArray = new ContentValues[cVVector.size()];
+                                            cVVector.toArray(cvArray);
+                                            getBaseContext().getContentResolver().delete(BlocktimeContract.BlocktimeEntry.CONTENT_URI, null, null);
+                                            getBaseContext().getContentResolver().bulkInsert(BlocktimeContract.BlocktimeEntry.CONTENT_URI, cvArray);
+                                        }
+
                                         SharedPreferences sp = getSharedPreferences(APP_PREF_KEY, MODE_PRIVATE);
                                         SharedPreferences.Editor editor = sp.edit();
                                         editor.putString(FLAG_CHOSEN_INSTITUTE, "" + institute_id);
                                         editor.commit();
-                                        */
+
                                         Intent i = new Intent(getBaseContext(), BlockTimeActivity.class);
                                         startActivity(i);
                                         finish();
