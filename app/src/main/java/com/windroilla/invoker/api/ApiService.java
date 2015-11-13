@@ -22,18 +22,18 @@ import rx.Observable;
 public interface ApiService {
 
     @Headers({"Content-Type:application/json", "Accept:application/json", "Accept-Language:en-US"})
-    @POST("/iresp/invoker-api/v1/users")
+    @POST("/invoker-api/v1/users")
     Observable<UserProfile> registerNewUser(@Body RequestRegistration body);
 
     @Headers({"Content-Type:application/json", "Accept:application/json", "Accept-Language:en-US"})
-    @GET("/iresp/invoker-api/v1/institutes")
+    @GET("/invoker-api/v1/institutes")
     Observable<List<Institute>> getInstituteList();
 
     @Headers({"Content-Type:application/json", "Accept:application/json", "Accept-Language:en-US"})
-    @GET("/iresp/invoker-api/v1/institutes/courses")
+    @GET("/invoker-api/v1/institutes/courses")
     Observable<List<Course>> getInstituteCourseList(@Query("id") int id);
 
     @Headers({"Content-Type:application/json", "Accept:application/json", "Accept-Language:en-US"})
-    @POST("/iresp/invoker-api/v1/users/setcourselist")
+    @POST("/invoker-api/v1/users/setcourselist")
     Observable<BlockTimeList> setUserCourseList(@Body RequestSetUserCourseList body);
 }

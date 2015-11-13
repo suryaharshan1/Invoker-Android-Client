@@ -19,7 +19,7 @@ import retrofit.RxJavaCallAdapterFactory;
  */
 @Module
 public final class ApiModule {
-    public static final String PRODUCTION_API_URL = "http://athena.nitc.ac.in/";
+    public static final String PRODUCTION_API_URL = "http://192.168.1.107/";
 
     private Context context;
 
