@@ -15,17 +15,24 @@ import android.support.annotation.Nullable;
  */
 public class BlocktimeProvider extends ContentProvider{
 
-    private BlocktimeDbHelper mOpenHelper;
-    private static final UriMatcher sUriMatcher = buildUriMatcher();
-
     static final int BLOCKTIME = 100;
     static final int BLOCKTIME_WITH_STARTTIME = 101;
     static final int BLOCKTIME_WITH_ENDTIME = 102;
     static final int BLOCKTIME_WITH_STARTTIME_AND_ENDTIME = 103;
-
+    private static final UriMatcher sUriMatcher = buildUriMatcher();
     private static final SQLiteQueryBuilder sBlocktimeQueryBuilder;
+    private static final String sStarttimeSelection =
+            BlocktimeContract.BlocktimeEntry.TABLE_NAME+
+                    "." + BlocktimeContract.BlocktimeEntry.COLUMN_START_TIME + " >= ? ";
+    private static final String sEndtimeSelection =
+            BlocktimeContract.BlocktimeEntry.TABLE_NAME+
+                    "." + BlocktimeContract.BlocktimeEntry.COLUMN_END_TIME + " <= ? ";
+    private static final String sStarttimeAndEndtimeSelection =
+            BlocktimeContract.BlocktimeEntry.TABLE_NAME+
+                    "." + BlocktimeContract.BlocktimeEntry.COLUMN_START_TIME + " >= ? AND " +
+                    BlocktimeContract.BlocktimeEntry.COLUMN_END_TIME + " <= ? ";
 
-    static{
+    static {
         sBlocktimeQueryBuilder = new SQLiteQueryBuilder();
 
         //This is an inner join which looks like
@@ -34,19 +41,7 @@ public class BlocktimeProvider extends ContentProvider{
                 BlocktimeContract.BlocktimeEntry.TABLE_NAME);
     }
 
-    private static final String sStarttimeSelection =
-            BlocktimeContract.BlocktimeEntry.TABLE_NAME+
-                    "." + BlocktimeContract.BlocktimeEntry.COLUMN_START_TIME + " >= ? ";
-
-    private static final String sEndtimeSelection =
-            BlocktimeContract.BlocktimeEntry.TABLE_NAME+
-                    "." + BlocktimeContract.BlocktimeEntry.COLUMN_END_TIME + " <= ? ";
-
-    private static final String sStarttimeAndEndtimeSelection =
-            BlocktimeContract.BlocktimeEntry.TABLE_NAME+
-                    "." + BlocktimeContract.BlocktimeEntry.COLUMN_START_TIME + " >= ? AND " +
-                    BlocktimeContract.BlocktimeEntry.COLUMN_END_TIME + " <= ? ";
-
+    private BlocktimeDbHelper mOpenHelper;
 
     private static UriMatcher buildUriMatcher() {
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -266,7 +261,6 @@ public class BlocktimeProvider extends ContentProvider{
                 int returnCount = 0;
                 try {
                     for (ContentValues value : values) {
-                        normalizeDate(value);
                         long _id = db.insert(BlocktimeContract.BlocktimeEntry.TABLE_NAME, null, value);
                         if (_id != -1) {
                             returnCount++;
