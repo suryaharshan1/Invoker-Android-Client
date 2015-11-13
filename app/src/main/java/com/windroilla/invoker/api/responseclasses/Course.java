@@ -7,6 +7,15 @@ public class Course {
     public int id;
     public String name;
     public int institute_id;
+    private boolean isChecked;
+
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setIsChecked(boolean isChecked) {
+        this.isChecked = isChecked;
+    }
 
     public int getId() {
         return id;

@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 
 import com.windroilla.invoker.R;
 import com.windroilla.invoker.api.responseclasses.Course;
@@ -42,13 +43,19 @@ public class CourseAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         if (inflater == null)
             inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (convertView == null)
             convertView = inflater.inflate(R.layout.list_course_item, null);
         CheckBox cb = (CheckBox) convertView.findViewById(R.id.list_course_item_checkBox);
         cb.setText(courseList.get(position).getName());
+        cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                courseList.get(position).setIsChecked(buttonView.isChecked());
+            }
+        });
         return convertView;
     }
 }

@@ -59,6 +59,7 @@ public class InstituteActivity extends AppCompatActivity {
                             public void call(Throwable throwable) {
                                 Log.e(TAG, "Institute Sync failed! " + throwable);
                                 Toast.makeText(getBaseContext(), "Institute sync failed! Please try again!", Toast.LENGTH_SHORT).show();
+                                finish();
                             }
                         }
                 );
