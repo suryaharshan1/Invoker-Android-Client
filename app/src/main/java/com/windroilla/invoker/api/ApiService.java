@@ -2,6 +2,7 @@ package com.windroilla.invoker.api;
 
 import com.windroilla.invoker.api.requestclasses.RequestRegistration;
 import com.windroilla.invoker.api.requestclasses.RequestSetUserCourseList;
+import com.windroilla.invoker.api.responseclasses.BlockTimeList;
 import com.windroilla.invoker.api.responseclasses.Course;
 import com.windroilla.invoker.api.responseclasses.Institute;
 import com.windroilla.invoker.api.responseclasses.UserProfile;
@@ -33,6 +34,6 @@ public interface ApiService {
     Observable<List<Course>> getInstituteCourseList(@Query("id") int id);
 
     @Headers({"Content-Type:application/json", "Accept:application/json", "Accept-Language:en-US"})
-    @POST("/iresp/invoker-api/v1/users")
-    Observable<UserProfile> setUserCourseList(@Body RequestSetUserCourseList body);
+    @POST("/iresp/invoker-api/v1/users/setcourselist")
+    Observable<BlockTimeList> setUserCourseList(@Body RequestSetUserCourseList body);
 }
