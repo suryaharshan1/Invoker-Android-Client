@@ -37,6 +37,10 @@
         <activity
             android:name=".CourseActivity"
             android:label="@string/title_activity_course"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".BlockTimeActivity"
+            android:label="@string/title_activity_block_time"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
