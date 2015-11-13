@@ -10,7 +10,7 @@
     <permission android:name="com.windroilla.invoker.gcm.permission.C2D_MESSAGE"
             android:protectionLevel="signature" />
 
-    <uses-permission android:name="com.windroilla.example.gcm.permission.C2D_MESSAGE" />
+    <uses-permission android:name="com.windroilla.invoker.gcm.permission.C2D_MESSAGE" />
 
     <application
         android:name=".InvokerApp"
