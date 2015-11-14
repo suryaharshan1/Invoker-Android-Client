@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
         if (sp.getString(FLAG_CHOSEN_INSTITUTE, "").isEmpty()) {
             startActivity(new Intent(this, InstituteActivity.class));
         } else {
-            startActivity(new Intent(this, MainActivity.class));
+            startActivity(new Intent(this, BlockTimeActivity.class));
         }
         overridePendingTransition(0, 0);
         finish();

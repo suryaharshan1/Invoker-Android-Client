@@ -6,10 +6,6 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 import android.text.format.Time;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-
 /**
  * Created by vishnu on 13/11/15.
  */
@@ -61,6 +57,10 @@ public class BlocktimeContract {
 
         public static Uri buildBlocktimeUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+
+        public static Uri buildBlocktimeUri() {
+            return BASE_CONTENT_URI.buildUpon().appendPath(PATH_BLOCKTIME).build();
         }
     }
 
