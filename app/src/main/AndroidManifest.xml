@@ -3,7 +3,7 @@
     package="com.windroilla.invoker">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-sdk android:minSdkVersion="8"/>
+    <uses-sdk android:minSdkVersion="14" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
 
@@ -50,6 +50,12 @@
             android:name=".BlockTimeActivity"
             android:label="@string/title_activity_block_time"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+
+        <provider
+            android:name=".data.BlocktimeProvider"
+            android:authorities="@string/content_authority"
+            android:exported="false"
+            android:syncable="true" />
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"
             android:exported="true"

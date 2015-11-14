@@ -7,4 +7,6 @@
     <string name="title_activity_course">CourseActivity</string>
     <string name="title_activity_block_time">BlockTimeActivity</string>
     <string name="content_authority">com.windroilla.invoker.app</string>
+    <string name="starttime_title">Start Time :</string>
+    <string name="endtime_title">End Time :</string>
 </resources>
