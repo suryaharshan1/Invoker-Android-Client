@@ -21,6 +21,11 @@ public class RegistrationIntentService extends IntentService {
 
     private static final String TAG = "RegIntentService";
     private static final String[] TOPICS = {"global"};
+
+    public RegistrationIntentService() {
+        super(TAG);
+    }
+
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
      *
@@ -35,6 +40,7 @@ public class RegistrationIntentService extends IntentService {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         try {
+
             // [START get_token]
             InstanceID instanceID = InstanceID.getInstance(this);
             String token = instanceID.getToken(getString(R.string.gcm_defaultSenderId),
