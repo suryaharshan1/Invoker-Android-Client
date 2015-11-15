@@ -1,5 +1,7 @@
 package com.windroilla.invoker;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,6 +22,8 @@ import com.windroilla.invoker.api.responseclasses.BlockTimeList;
 import com.windroilla.invoker.api.responseclasses.Course;
 import com.windroilla.invoker.data.BlocktimeContract;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -43,6 +47,7 @@ public class CourseActivity extends AppCompatActivity {
     private ListView lv;
     private CourseAdapter courseAdapter;
     private List<Course> courseList = new ArrayList<Course>();
+    private AlarmReceiver alarmReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +66,7 @@ public class CourseActivity extends AppCompatActivity {
         lv = (ListView) findViewById(R.id.course_listView);
         courseAdapter = new CourseAdapter(this, courseList);
         lv.setAdapter(courseAdapter);
+        alarmReceiver = new AlarmReceiver();
         apiService.getInstituteCourseList(institute_id)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -101,6 +107,10 @@ public class CourseActivity extends AppCompatActivity {
                                     public void call(BlockTimeList blockTimeList) {
                                         Log.d(TAG, blockTimeList.access_time);
                                         Vector<ContentValues> cVVector = new Vector<ContentValues>(blockTimeList.getBlockTimes().size());
+                                        AlarmManager mgrAlarm = (AlarmManager) getApplicationContext().getSystemService(ALARM_SERVICE);
+                                        ArrayList<PendingIntent> intentArray = new ArrayList<PendingIntent>();
+                                        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                        formatter.setLenient(false);
                                         for (int i = 0; i < blockTimeList.getBlockTimes().size(); i++) {
                                             BlockTime blockTime = blockTimeList.getBlockTimes().get(i);
                                             Log.d(TAG, blockTime.getCourse_id() + " " +
@@ -112,6 +122,23 @@ public class CourseActivity extends AppCompatActivity {
                                             blockTimeValues.put(BlocktimeContract.BlocktimeEntry.COLUMN_START_TIME, blockTime.getStarttime());
                                             blockTimeValues.put(BlocktimeContract.BlocktimeEntry.COLUMN_END_TIME, blockTime.getEndtime());
                                             blockTimeValues.put(BlocktimeContract.BlocktimeEntry.COLUMN_CREATED_TIME, blockTime.getCreated_time());
+                                            Intent startIntent = new Intent(getBaseContext(), AlarmReceiver.class);
+                                            startIntent.setAction("com.windroilla.invoker.blockservice.start");
+                                            Intent endIntent = new Intent(getBaseContext(), AlarmReceiver.class);
+                                            endIntent.setAction("com.windroilla.invoker.blockservice.stop");
+                                            PendingIntent pendingStartIntent = PendingIntent.getBroadcast(getApplicationContext(), blockTime.getId(), startIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                                            PendingIntent pendingEndIntent = PendingIntent.getBroadcast(getApplicationContext(), blockTime.getId(), endIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                                            try {
+                                                mgrAlarm.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                                                        formatter.parse(blockTime.getStarttime()).getTime(),
+                                                        pendingStartIntent);
+                                                mgrAlarm.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                                                        formatter.parse(blockTime.getEndtime()).getTime(),
+                                                        pendingEndIntent);
+                                            } catch (ParseException e) {
+                                                Log.e(TAG, e.toString());
+                                            }
+                                            intentArray.add(pendingStartIntent);
                                             cVVector.add(blockTimeValues);
                                         }
 

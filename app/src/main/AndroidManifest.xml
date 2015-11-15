@@ -95,7 +95,14 @@
         <receiver
             android:name=".AlarmReceiver"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.windroilla.invoker.blockservice.start" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.windroilla.invoker.blockservice.stop" />
+            </intent-filter>
+        </receiver>
 
         <service
             android:name=".TouchBlockService"
