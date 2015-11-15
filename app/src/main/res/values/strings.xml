@@ -12,4 +12,5 @@
     <string name="gcm_send_message">Token sent to server</string>
     <string name="token_error_message">token error</string>
     <string name="registering_message">registering message</string>
+    <string name="title_activity_touch_block">TouchBlockActivity</string>
 </resources>
