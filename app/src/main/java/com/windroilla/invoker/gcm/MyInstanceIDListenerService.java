@@ -1,13 +1,24 @@
 package com.windroilla.invoker.gcm;
 
 import android.content.Intent;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
 import com.google.android.gms.iid.InstanceIDListenerService;
+import com.windroilla.invoker.InvokerApp;
 import com.windroilla.invoker.R;
+import com.windroilla.invoker.api.ApiService;
+import com.windroilla.invoker.api.requestclasses.RequestSetRegistrationToken;
+import com.windroilla.invoker.api.responseclasses.UserProfile;
 
 import java.io.IOException;
+
+import javax.inject.Inject;
+
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by vishnu on 13/11/15.
@@ -15,6 +26,17 @@ import java.io.IOException;
 public class MyInstanceIDListenerService extends InstanceIDListenerService {
 
     private static final String TAG = "MyInstanceIDLS";
+
+    @Inject
+    ApiService apiService;
+
+    @Inject
+    String deviceID;
+
+    public MyInstanceIDListenerService() {
+        super();
+        InvokerApp.getsInstance().graph().inject(this);
+    }
 
     /**
      * Called if InstanceID token is updated. This may occur if the security of
@@ -29,7 +51,7 @@ public class MyInstanceIDListenerService extends InstanceIDListenerService {
         try {
             String token = instanceID.getToken(getString(R.string.gcm_defaultSenderId),
                     GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
-            //@TODO : send the new token to application server
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -37,5 +59,33 @@ public class MyInstanceIDListenerService extends InstanceIDListenerService {
         startService(intent);
     }
     // [END refresh_token]
+
+    private void sendRegistrationToServer(String token) {
+        //send the token to server
+        Log.i("device ID ", deviceID);
+        Log.i("token" , token);
+        apiService.setRegToken(
+                new RequestSetRegistrationToken(
+                        deviceID,
+                        token
+                )
+        )
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(Schedulers.newThread())
+                .subscribe(new Action1<UserProfile>() {
+                               @Override
+                               public void call(UserProfile userProfile) {
+                                   if (userProfile == null)
+                                       return;
+                               }
+                           },
+                        new Action1<Throwable>() {
+                            @Override
+                            public void call(Throwable throwable) {
+                                Log.e(TAG, "Registration failed! " + throwable);
+                                Toast.makeText(getBaseContext(), "User registration token set failed! Please try again!", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+    }
 
 }
