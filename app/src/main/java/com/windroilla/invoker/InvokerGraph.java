@@ -1,6 +1,7 @@
 package com.windroilla.invoker;
 
 import com.windroilla.invoker.api.ApiModule;
+import com.windroilla.invoker.gcm.MyGcmListenerService;
 import com.windroilla.invoker.gcm.RegistrationIntentService;
 
 import javax.inject.Singleton;
@@ -21,4 +22,6 @@ public interface InvokerGraph {
     void inject(CourseActivity courseActivity);
 
     void inject(RegistrationIntentService registrationIntentService);
+
+    void inject(MyGcmListenerService myGcmListenerService);
 }

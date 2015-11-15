@@ -57,8 +57,8 @@ public class BlockTimeActivity extends AppCompatActivity implements LoaderManage
             startService(intent);
         }
 
-        startService(new Intent(this, TouchBlockService.class));
-        finish();
+        //startService(new Intent(this, TouchBlockService.class));
+        //finish();
     }
 
     @Override
