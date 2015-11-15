@@ -1,6 +1,7 @@
 package com.windroilla.invoker.api;
 
 import com.windroilla.invoker.api.requestclasses.RequestRegistration;
+import com.windroilla.invoker.api.requestclasses.RequestSetRegistrationToken;
 import com.windroilla.invoker.api.requestclasses.RequestSetUserCourseList;
 import com.windroilla.invoker.api.responseclasses.BlockTimeList;
 import com.windroilla.invoker.api.responseclasses.Course;
@@ -36,4 +37,8 @@ public interface ApiService {
     @Headers({"Content-Type:application/json", "Accept:application/json", "Accept-Language:en-US"})
     @POST("/iresp/invoker-api/v1/users/setcourselist")
     Observable<BlockTimeList> setUserCourseList(@Body RequestSetUserCourseList body);
+
+    @Headers({"Content-Type:application/json", "Accept:application/json", "Accept-Language:en-US"})
+    @POST("/iresp/invoker-api/v1/users/setregtoken")
+    Observable<UserProfile> setRegToken(@Body RequestSetRegistrationToken body);
 }

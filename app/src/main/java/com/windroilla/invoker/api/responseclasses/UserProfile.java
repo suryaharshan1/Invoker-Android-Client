@@ -8,6 +8,7 @@ public class UserProfile {
     public String mobile_id;
     public String phone_number;
     public String access_time;
+    public String reg_token;
 
     public String getAccess_time() {
         return access_time;
@@ -25,4 +26,9 @@ public class UserProfile {
     public String getPhone_number() {
         return phone_number;
     }
+
+    public String getReg_token() {
+        return reg_token;
+    }
 }
+
