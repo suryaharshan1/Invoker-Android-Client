@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -133,20 +132,21 @@ public class CourseActivity extends AppCompatActivity {
                                             Intent endIntent = new Intent(getBaseContext(), AlarmReceiver.class);
                                             endIntent.setAction("com.windroilla.invoker.blockservice.stop");
                                             PendingIntent pendingStartIntent = PendingIntent.getBroadcast(getApplicationContext(), blockTime.getId(), startIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-                                            PendingIntent pendingEndIntent = PendingIntent.getBroadcast(getApplicationContext(), blockTime.getId(), endIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                                            PendingIntent pendingEndIntent = PendingIntent.getBroadcast(getApplicationContext(), -blockTime.getId(), endIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                                             try {
-                                                mgrAlarm.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                                                mgrAlarm.set(AlarmManager.RTC_WAKEUP,
                                                         formatter.parse(blockTime.getStarttime()).getTime(),
                                                         pendingStartIntent);
-                                                Log.d(TAG, formatter.parse(blockTime.getStarttime()).getTime() + " " + SystemClock.elapsedRealtime() + " " + (formatter.parse(blockTime.getStarttime()).getTime() - SystemClock.elapsedRealtime()));
-                                                Log.d(TAG, formatter.parse(blockTime.getEndtime()).getTime() + " " + SystemClock.elapsedRealtime() + " " + (formatter.parse(blockTime.getEndtime()).getTime() - SystemClock.elapsedRealtime()));
-                                                mgrAlarm.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                                                Log.d(TAG, formatter.parse(blockTime.getStarttime()).getTime() + " " + System.currentTimeMillis() + " " + (formatter.parse(blockTime.getStarttime()).getTime() - System.currentTimeMillis()));
+                                                Log.d(TAG, formatter.parse(blockTime.getEndtime()).getTime() + " " + System.currentTimeMillis() + " " + (formatter.parse(blockTime.getEndtime()).getTime() - System.currentTimeMillis()));
+                                                mgrAlarm.set(AlarmManager.RTC_WAKEUP,
                                                         formatter.parse(blockTime.getEndtime()).getTime(),
                                                         pendingEndIntent);
                                             } catch (ParseException e) {
                                                 Log.e(TAG, e.toString());
                                             }
                                             intentArray.add(pendingStartIntent);
+                                            intentArray.add(pendingEndIntent);
                                             cVVector.add(blockTimeValues);
                                         }
                                         Log.d(TAG, intentArray.size() + " PendingIntents have been progressed");
