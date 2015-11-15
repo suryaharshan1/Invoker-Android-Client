@@ -78,6 +78,7 @@ public class BlockTimeActivity extends AppCompatActivity implements LoaderManage
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         blockTimeAdapter.swapCursor(data);
+        blockTimeAdapter.notifyDataSetChanged();
     }
 
     @Override

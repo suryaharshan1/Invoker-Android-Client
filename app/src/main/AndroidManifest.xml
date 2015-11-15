@@ -109,10 +109,6 @@
             android:enabled="true"
             android:exported="true" />
 
-        <activity
-            android:name=".TouchBlockActivity"
-            android:label="@string/title_activity_touch_block"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
