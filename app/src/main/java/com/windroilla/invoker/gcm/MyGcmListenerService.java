@@ -175,7 +175,6 @@ public class MyGcmListenerService extends GcmListenerService {
                                     if (cVVector.size() > 0) {
                                         ContentValues[] cvArray = new ContentValues[cVVector.size()];
                                         cVVector.toArray(cvArray);
-                                        getBaseContext().getContentResolver().delete(BlocktimeContract.BlocktimeEntry.CONTENT_URI, null, null);
                                         getBaseContext().getContentResolver().bulkInsert(BlocktimeContract.BlocktimeEntry.CONTENT_URI, cvArray);
                                     }
 
