@@ -69,6 +69,7 @@ public class CourseActivity extends AppCompatActivity {
         courseAdapter = new CourseAdapter(this, courseList);
         lv.setAdapter(courseAdapter);
         alarmReceiver = new AlarmReceiver();
+        filter = new IntentFilter();
         filter.addAction("com.windroilla.invoker.blockservice.start");
         filter.addAction("com.windroilla.invoker.blockservice.stop");
         getApplicationContext().registerReceiver(alarmReceiver, filter);
