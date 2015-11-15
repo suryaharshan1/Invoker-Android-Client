@@ -1,33 +1,12 @@
 package com.windroilla.invoker.gcm;
 
-import com.google.android.gms.gcm.GcmListenerService;
-
-/**
- * Created by vishnu on 13/11/15.
- */
-/**
- * Copyright 2015 Google Inc. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-
+import android.app.AlarmManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.IntentFilter;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -36,7 +15,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.gcm.GcmListenerService;
-import com.windroilla.invoker.BlockTimeActivity;
+import com.windroilla.invoker.AlarmReceiver;
 import com.windroilla.invoker.InvokerApp;
 import com.windroilla.invoker.MainActivity;
 import com.windroilla.invoker.R;
@@ -46,12 +25,49 @@ import com.windroilla.invoker.api.responseclasses.BlockTime;
 import com.windroilla.invoker.api.responseclasses.BlockTimeList;
 import com.windroilla.invoker.data.BlocktimeContract;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Vector;
 
 import javax.inject.Inject;
 
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
+
+/**
+ * Created by vishnu on 13/11/15.
+ * <p/>
+ * Copyright 2015 Google Inc. All Rights Reserved.
+ * <p/>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * Copyright 2015 Google Inc. All Rights Reserved.
+ * <p/>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 public class MyGcmListenerService extends GcmListenerService {
 
@@ -62,10 +78,25 @@ public class MyGcmListenerService extends GcmListenerService {
     @Inject
     String deviceID;
 
+    private AlarmReceiver alarmReceiver;
+    private IntentFilter filter;
+
     @Override
     public void onCreate() {
         super.onCreate();
         InvokerApp.getsInstance().graph().inject(this);
+        alarmReceiver = new AlarmReceiver();
+        filter = new IntentFilter();
+        filter.addAction("com.windroilla.invoker.blockservice.start");
+        filter.addAction("com.windroilla.invoker.blockservice.stop");
+        getApplicationContext().registerReceiver(alarmReceiver, filter);
+
+    }
+
+    @Override
+    public void onDestroy() {
+        getApplicationContext().unregisterReceiver(alarmReceiver);
+        super.onDestroy();
     }
 
     /**
@@ -100,6 +131,11 @@ public class MyGcmListenerService extends GcmListenerService {
                                 public void call(BlockTimeList blockTimeList) {
                                     Log.d(TAG, blockTimeList.access_time);
                                     Vector<ContentValues> cVVector = new Vector<ContentValues>(blockTimeList.getBlockTimes().size());
+                                    AlarmManager mgrAlarm = (AlarmManager) getApplicationContext().getSystemService(ALARM_SERVICE);
+                                    ArrayList<PendingIntent> intentArray = new ArrayList<PendingIntent>();
+                                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                    formatter.setLenient(false);
+
                                     for (int i = 0; i < blockTimeList.getBlockTimes().size(); i++) {
                                         BlockTime blockTime = blockTimeList.getBlockTimes().get(i);
                                         Log.d(TAG, blockTime.getCourse_id() + " " +
@@ -111,9 +147,29 @@ public class MyGcmListenerService extends GcmListenerService {
                                         blockTimeValues.put(BlocktimeContract.BlocktimeEntry.COLUMN_START_TIME, blockTime.getStarttime());
                                         blockTimeValues.put(BlocktimeContract.BlocktimeEntry.COLUMN_END_TIME, blockTime.getEndtime());
                                         blockTimeValues.put(BlocktimeContract.BlocktimeEntry.COLUMN_CREATED_TIME, blockTime.getCreated_time());
+                                        Intent startIntent = new Intent(getBaseContext(), AlarmReceiver.class);
+                                        startIntent.setAction("com.windroilla.invoker.blockservice.start");
+                                        Intent endIntent = new Intent(getBaseContext(), AlarmReceiver.class);
+                                        endIntent.setAction("com.windroilla.invoker.blockservice.stop");
+                                        PendingIntent pendingStartIntent = PendingIntent.getBroadcast(getApplicationContext(), blockTime.getId(), startIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                                        PendingIntent pendingEndIntent = PendingIntent.getBroadcast(getApplicationContext(), -blockTime.getId(), endIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                                        try {
+                                            mgrAlarm.set(AlarmManager.RTC_WAKEUP,
+                                                    formatter.parse(blockTime.getStarttime()).getTime(),
+                                                    pendingStartIntent);
+                                            Log.d(TAG, formatter.parse(blockTime.getStarttime()).getTime() + " " + System.currentTimeMillis() + " " + (formatter.parse(blockTime.getStarttime()).getTime() - System.currentTimeMillis()));
+                                            Log.d(TAG, formatter.parse(blockTime.getEndtime()).getTime() + " " + System.currentTimeMillis() + " " + (formatter.parse(blockTime.getEndtime()).getTime() - System.currentTimeMillis()));
+                                            mgrAlarm.set(AlarmManager.RTC_WAKEUP,
+                                                    formatter.parse(blockTime.getEndtime()).getTime(),
+                                                    pendingEndIntent);
+                                        } catch (ParseException e) {
+                                            Log.e(TAG, e.toString());
+                                        }
+                                        intentArray.add(pendingStartIntent);
+                                        intentArray.add(pendingEndIntent);
                                         cVVector.add(blockTimeValues);
                                     }
-
+                                    Log.d(TAG, intentArray.size() + " PendingIntents have been progressed");
                                     int inserted = 0;
                                     // add to database
                                     if (cVVector.size() > 0) {

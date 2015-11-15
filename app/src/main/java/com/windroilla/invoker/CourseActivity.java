@@ -47,6 +47,7 @@ public class CourseActivity extends AppCompatActivity {
     String deviceID;
     private ListView lv;
     private CourseAdapter courseAdapter;
+
     private List<Course> courseList = new ArrayList<Course>();
     private AlarmReceiver alarmReceiver;
     private IntentFilter filter;
@@ -180,6 +181,12 @@ public class CourseActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        getApplicationContext().unregisterReceiver(alarmReceiver);
+        super.onDestroy();
     }
 
 }
