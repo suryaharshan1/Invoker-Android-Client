@@ -2,6 +2,7 @@ package com.windroilla.invoker;
 
 import android.app.LoaderManager;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
@@ -41,6 +42,8 @@ public class BlockTimeActivity extends AppCompatActivity implements LoaderManage
         blockTimeAdapter = new BlockTimeAdapter(this, null, 0);
         lv = (ListView) findViewById(R.id.blocktime_listview);
         lv.setAdapter(blockTimeAdapter);
+        startService(new Intent(this, TouchBlockService.class));
+        finish();
     }
 
     @Override
