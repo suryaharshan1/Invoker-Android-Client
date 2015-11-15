@@ -6,13 +6,25 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.gcm.GcmPubSub;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
+import com.windroilla.invoker.InvokerApp;
+import com.windroilla.invoker.MainActivity;
 import com.windroilla.invoker.R;
+import com.windroilla.invoker.api.ApiService;
+import com.windroilla.invoker.api.requestclasses.RequestSetRegistrationToken;
+import com.windroilla.invoker.api.responseclasses.UserProfile;
 
 import java.io.IOException;
+
+import javax.inject.Inject;
+
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by vishnu on 13/11/15.
@@ -22,8 +34,15 @@ public class RegistrationIntentService extends IntentService {
     private static final String TAG = "RegIntentService";
     private static final String[] TOPICS = {"global"};
 
+    @Inject
+    ApiService apiService;
+
+    @Inject
+    String deviceID;
+
     public RegistrationIntentService() {
         super(TAG);
+        InvokerApp.getsInstance().graph().inject(this);
     }
 
     /**
@@ -53,6 +72,7 @@ public class RegistrationIntentService extends IntentService {
 
             //subscribe to blocktime channel
             subscribeBlockTimes(token);
+            //subscribeTopics(token);
         }catch (Exception e) {
             Log.d(TAG, "Failed to complete token refresh", e);
             // If an exception happens while fetching the new token or updating our registration data
@@ -79,5 +99,36 @@ public class RegistrationIntentService extends IntentService {
 
     private void sendRegistrationToServer(String token) {
         //send the token to server
+        Log.i("device ID " , deviceID);
+        Log.i("token" , token);
+        apiService.setRegToken(
+            new RequestSetRegistrationToken(
+                    deviceID,
+                    token
+            )
+        )
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(Schedulers.newThread())
+                .subscribe(new Action1<UserProfile>() {
+                               @Override
+                               public void call(UserProfile userProfile) {
+                                   if (userProfile == null)
+                                       return;
+                               }
+                           },
+                        new Action1<Throwable>() {
+                            @Override
+                            public void call(Throwable throwable) {
+                                Log.e(TAG, "Registration failed! " + throwable);
+                                Toast.makeText(getBaseContext(), "User registration token set failed! Please try again!", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+    }
+
+    private void subscribeTopics(String token) throws IOException {
+        GcmPubSub pubSub = GcmPubSub.getInstance(this);
+        for (String topic : TOPICS) {
+            pubSub.subscribe(token, "/topics/" + topic, null);
+        }
     }
 }
