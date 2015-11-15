@@ -4,8 +4,10 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -48,7 +50,7 @@ public class CourseActivity extends AppCompatActivity {
     private CourseAdapter courseAdapter;
     private List<Course> courseList = new ArrayList<Course>();
     private AlarmReceiver alarmReceiver;
-
+    private IntentFilter filter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +69,9 @@ public class CourseActivity extends AppCompatActivity {
         courseAdapter = new CourseAdapter(this, courseList);
         lv.setAdapter(courseAdapter);
         alarmReceiver = new AlarmReceiver();
+        filter.addAction("com.windroilla.invoker.blockservice.start");
+        filter.addAction("com.windroilla.invoker.blockservice.stop");
+        getApplicationContext().registerReceiver(alarmReceiver, filter);
         apiService.getInstituteCourseList(institute_id)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -132,6 +137,8 @@ public class CourseActivity extends AppCompatActivity {
                                                 mgrAlarm.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
                                                         formatter.parse(blockTime.getStarttime()).getTime(),
                                                         pendingStartIntent);
+                                                Log.d(TAG, formatter.parse(blockTime.getStarttime()).getTime() + " " + SystemClock.elapsedRealtime() + " " + (formatter.parse(blockTime.getStarttime()).getTime() - SystemClock.elapsedRealtime()));
+                                                Log.d(TAG, formatter.parse(blockTime.getEndtime()).getTime() + " " + SystemClock.elapsedRealtime() + " " + (formatter.parse(blockTime.getEndtime()).getTime() - SystemClock.elapsedRealtime()));
                                                 mgrAlarm.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
                                                         formatter.parse(blockTime.getEndtime()).getTime(),
                                                         pendingEndIntent);
@@ -141,7 +148,7 @@ public class CourseActivity extends AppCompatActivity {
                                             intentArray.add(pendingStartIntent);
                                             cVVector.add(blockTimeValues);
                                         }
-
+                                        Log.d(TAG, intentArray.size() + " PendingIntents have been progressed");
                                         int inserted = 0;
                                         // add to database
                                         if (cVVector.size() > 0) {

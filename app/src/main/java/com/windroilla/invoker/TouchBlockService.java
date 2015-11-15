@@ -40,6 +40,15 @@ public class TouchBlockService extends Service implements View.OnTouchListener, 
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mVideoProtectorView != null) {
+            mVideoProtectorView.dismiss();
+            Log.i("TouchBlocker", "onCreate");
+        }
+    }
+
+    @Override
     public boolean onTouch(View v, MotionEvent event) {
         return true;
     }
