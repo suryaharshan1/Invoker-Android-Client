@@ -16,22 +16,22 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        SharedPreferences sp = context.getSharedPreferences(APP_PREF_KEY, Activity.MODE_PRIVATE);
+        SharedPreferences sp = context.getApplicationContext().getSharedPreferences(APP_PREF_KEY, Activity.MODE_PRIVATE);
         int serviceCount = sp.getInt(INVOKER_SERVICE_COUNT, 0);
         SharedPreferences.Editor editor = sp.edit();
         Log.d(TAG, "OnReceive with serviceCount " + serviceCount);
         if (intent.getAction().equals("com.windroilla.invoker.blockservice.start")) {
             if (serviceCount == 0) {
-                Intent i = new Intent(context, TouchBlockService.class);
-                context.startService(i);
+                Intent i = new Intent(context.getApplicationContext(), TouchBlockService.class);
+                context.getApplicationContext().startService(i);
                 Log.d(TAG, "OnReceive start TouchBlockService");
             }
             serviceCount++;
             editor.putInt(INVOKER_SERVICE_COUNT, serviceCount);
         } else if (intent.getAction().equals("com.windroilla.invoker.blockservice.stop")) {
             if (serviceCount == 1) {
-                Intent i = new Intent(context, TouchBlockService.class);
-                context.stopService(i);
+                Intent i = new Intent(context.getApplicationContext(), TouchBlockService.class);
+                context.getApplicationContext().stopService(i);
                 Log.d(TAG, "OnReceive stop TouchBlockService");
             }
             serviceCount--;
