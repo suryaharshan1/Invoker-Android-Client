@@ -91,7 +91,8 @@ public class TouchBlockService extends Service implements View.OnTouchListener, 
                     WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
                     WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON |
                             WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                    PixelFormat.TRANSLUCENT);
+                    PixelFormat.OPAQUE);
+            params.alpha = 0.5F;
             params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
             params.gravity = Gravity.TOP;
             params.setTitle("Satellite Info");

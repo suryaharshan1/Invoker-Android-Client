@@ -24,7 +24,7 @@ import rx.Observable;
 public interface ApiService {
 
     @Headers({"Content-Type:application/json", "Accept:application/json", "Accept-Language:en-US"})
-    @POST("/iresp/invoker-api/v1/users")
+    @POST("/iresp/invoker-api/v1/users/register")
     Observable<UserProfile> registerNewUser(@Body RequestRegistration body);
 
     @Headers({"Content-Type:application/json", "Accept:application/json", "Accept-Language:en-US"})
