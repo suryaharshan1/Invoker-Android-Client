@@ -36,6 +36,10 @@ public class AlarmReceiver extends BroadcastReceiver {
             }
             serviceCount--;
             editor.putInt(INVOKER_SERVICE_COUNT, serviceCount);
+        } else if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
+            Intent i = new Intent(context.getApplicationContext(), OnBootService.class);
+            context.getApplicationContext().startService(i);
+            Log.d(TAG, "OnReceive BOOT_COMPLETE");
         }
         Log.d(TAG, "OnReceive with new serviceCount " + serviceCount);
         editor.commit();
