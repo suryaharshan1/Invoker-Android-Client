@@ -23,7 +23,7 @@ public class TouchBlockService extends Service implements View.OnTouchListener, 
     private AudioManager audiomanage;
     private int audio;
     private int volume;
-    private int[] stream;
+    private int stream0, stream1,stream2,stream3,stream4;
 
     public TouchBlockService() {
     }
@@ -34,7 +34,6 @@ public class TouchBlockService extends Service implements View.OnTouchListener, 
         mVideoProtectorView = new TouchBlockView(this);
         mVideoProtectorView.setOnTouchListener(this);
         mVideoProtectorView.setOnKeyListener(this);
-        audiomanage = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
         Log.i("TouchBlocker", "onCreate");
     }
 
@@ -42,19 +41,22 @@ public class TouchBlockService extends Service implements View.OnTouchListener, 
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i("TouchBlocker", "onStartCommand");
         mVideoProtectorView.show();
+
+        audiomanage = (AudioManager)getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
+
         audio = audiomanage.getRingerMode();
 
-        /*
-        stream[0] = audiomanage.getStreamVolume(AudioManager.STREAM_MUSIC);
-        stream[1] = audiomanage.getStreamVolume(AudioManager.STREAM_RING);
-        stream[2] = audiomanage.getStreamVolume(AudioManager.STREAM_ALARM);
-        stream[4] = audiomanage.getStreamVolume(AudioManager.STREAM_NOTIFICATION);
-        audiomanage.setStreamVolume(AudioManager.STREAM_MUSIC, 0, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+        stream0 = audiomanage.getStreamVolume(AudioManager.STREAM_MUSIC);
+        stream1 = audiomanage.getStreamVolume(AudioManager.STREAM_RING);
+        stream2 = audiomanage.getStreamVolume(AudioManager.STREAM_ALARM);
+        stream3 = audiomanage.getStreamVolume(AudioManager.STREAM_NOTIFICATION);
+        stream4 = audiomanage.getStreamVolume(AudioManager.STREAM_SYSTEM);
+        audiomanage.setStreamVolume(AudioManager.STREAM_MUSIC, 0, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE );
         audiomanage.setStreamVolume(AudioManager.STREAM_RING, 0, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
         audiomanage.setStreamVolume(AudioManager.STREAM_ALARM, 0, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
-        audiomanage.setStreamVolume(AudioManager.STREAM_SYSTEM, 0, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
         audiomanage.setStreamVolume(AudioManager.STREAM_NOTIFICATION, 0, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
-        */
+        audiomanage.setStreamVolume(AudioManager.STREAM_SYSTEM, 0, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+
 
         audiomanage.setRingerMode(AudioManager.RINGER_MODE_SILENT);
         return START_STICKY;
@@ -67,13 +69,14 @@ public class TouchBlockService extends Service implements View.OnTouchListener, 
             Log.i("TouchBlocker", "onCreate");
         }
         if(audiomanage != null){
-            /*
-            audiomanage.setStreamVolume(AudioManager.STREAM_MUSIC, 0, stream[0]);
-            audiomanage.setStreamVolume(AudioManager.STREAM_RING, 0, stream[1]);
-            audiomanage.setStreamVolume(AudioManager.STREAM_ALARM, 0, stream[2]);
-            audiomanage.setStreamVolume(AudioManager.STREAM_NOTIFICATION, 0, stream[4]);
-            */
+
+            audiomanage.setStreamVolume(AudioManager.STREAM_MUSIC, stream0,AudioManager.ADJUST_SAME);
+            audiomanage.setStreamVolume(AudioManager.STREAM_RING, stream1, AudioManager.ADJUST_SAME);
+            audiomanage.setStreamVolume(AudioManager.STREAM_ALARM, stream2, AudioManager.ADJUST_SAME);
+            audiomanage.setStreamVolume(AudioManager.STREAM_NOTIFICATION, stream3, AudioManager.ADJUST_SAME);
+            audiomanage.setStreamVolume(AudioManager.STREAM_SYSTEM,stream4,AudioManager.ADJUST_SAME);
             audiomanage.setRingerMode(audio);
+
         }
         super.onDestroy();
     }
