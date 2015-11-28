@@ -22,6 +22,8 @@ public class TouchBlockService extends Service implements View.OnTouchListener, 
     private float mLastY;
     private AudioManager audiomanage;
     private int audio;
+    private int volume;
+    private int[] stream;
 
     public TouchBlockService() {
     }
@@ -40,21 +42,40 @@ public class TouchBlockService extends Service implements View.OnTouchListener, 
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i("TouchBlocker", "onStartCommand");
         mVideoProtectorView.show();
-        audio = audiomanage.getMode();
+        audio = audiomanage.getRingerMode();
+
+        /*
+        stream[0] = audiomanage.getStreamVolume(AudioManager.STREAM_MUSIC);
+        stream[1] = audiomanage.getStreamVolume(AudioManager.STREAM_RING);
+        stream[2] = audiomanage.getStreamVolume(AudioManager.STREAM_ALARM);
+        stream[4] = audiomanage.getStreamVolume(AudioManager.STREAM_NOTIFICATION);
+        audiomanage.setStreamVolume(AudioManager.STREAM_MUSIC, 0, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+        audiomanage.setStreamVolume(AudioManager.STREAM_RING, 0, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+        audiomanage.setStreamVolume(AudioManager.STREAM_ALARM, 0, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+        audiomanage.setStreamVolume(AudioManager.STREAM_SYSTEM, 0, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+        audiomanage.setStreamVolume(AudioManager.STREAM_NOTIFICATION, 0, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+        */
+
         audiomanage.setRingerMode(AudioManager.RINGER_MODE_SILENT);
         return START_STICKY;
     }
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         if (mVideoProtectorView != null) {
             mVideoProtectorView.dismiss();
             Log.i("TouchBlocker", "onCreate");
         }
         if(audiomanage != null){
+            /*
+            audiomanage.setStreamVolume(AudioManager.STREAM_MUSIC, 0, stream[0]);
+            audiomanage.setStreamVolume(AudioManager.STREAM_RING, 0, stream[1]);
+            audiomanage.setStreamVolume(AudioManager.STREAM_ALARM, 0, stream[2]);
+            audiomanage.setStreamVolume(AudioManager.STREAM_NOTIFICATION, 0, stream[4]);
+            */
             audiomanage.setRingerMode(audio);
         }
+        super.onDestroy();
     }
 
     @Override
