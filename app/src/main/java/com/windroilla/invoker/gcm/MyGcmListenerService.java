@@ -183,8 +183,7 @@ public class MyGcmListenerService extends GcmListenerService {
                             new Action1<Throwable>() {
                                 @Override
                                 public void call(Throwable throwable) {
-                                    Log.e(TAG, "setCourseList Sync failed! " + throwable);
-                                    Toast.makeText(getBaseContext(), "Block Times Sync Failed! Please try again!", Toast.LENGTH_SHORT).show();
+                                    Log.e(TAG, "BlockTimes Sync failed! " + throwable);
                                 }
                             }
                     );

@@ -83,7 +83,7 @@ public class MyInstanceIDListenerService extends InstanceIDListenerService {
                             @Override
                             public void call(Throwable throwable) {
                                 Log.e(TAG, "Registration failed! " + throwable);
-                                Toast.makeText(getBaseContext(), "User registration token set failed! Please try again!", Toast.LENGTH_SHORT).show();
+
                             }
                         });
     }
