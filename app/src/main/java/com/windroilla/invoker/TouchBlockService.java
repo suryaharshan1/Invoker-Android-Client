@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
+import android.media.AudioManager;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.Gravity;
@@ -19,6 +20,8 @@ public class TouchBlockService extends Service implements View.OnTouchListener, 
     private float mY;
     private float mLastX;
     private float mLastY;
+    private AudioManager audiomanage;
+    private int audio;
 
     public TouchBlockService() {
     }
@@ -29,6 +32,7 @@ public class TouchBlockService extends Service implements View.OnTouchListener, 
         mVideoProtectorView = new TouchBlockView(this);
         mVideoProtectorView.setOnTouchListener(this);
         mVideoProtectorView.setOnKeyListener(this);
+        audiomanage = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
         Log.i("TouchBlocker", "onCreate");
     }
 
@@ -36,6 +40,8 @@ public class TouchBlockService extends Service implements View.OnTouchListener, 
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i("TouchBlocker", "onStartCommand");
         mVideoProtectorView.show();
+        audio = audiomanage.getMode();
+        audiomanage.setRingerMode(AudioManager.RINGER_MODE_SILENT);
         return START_STICKY;
     }
 
@@ -45,6 +51,9 @@ public class TouchBlockService extends Service implements View.OnTouchListener, 
         if (mVideoProtectorView != null) {
             mVideoProtectorView.dismiss();
             Log.i("TouchBlocker", "onCreate");
+        }
+        if(audiomanage != null){
+            audiomanage.setRingerMode(audio);
         }
     }
 
